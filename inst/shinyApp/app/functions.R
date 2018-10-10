@@ -351,12 +351,14 @@ arcsinhTransCIPHE <- function(flow.frame, marker=NULL, arg){
   return(flow.frame)
 }
 
-inversArcsinhTransCIPHE <- function(flow.frame, marker_untrans, arg){
+inversArcsinhTransCIPHE <- function(flow.frame, marker_untrans=NULL, arg){
   raw <- flow.frame@exprs
   mat <- flow.frame@exprs
-  marker_untrans_index <- which(colnames(flow.frame)%in%marker_untrans)
-  # print(marker_untrans_index)
-  mat <- mat[,-marker_untrans_index]
+  if(!is.null(marker_untrans)|| length(marker_untrans)>0){
+    marker_untrans_index <- which(colnames(flow.frame)%in%marker_untrans)
+    # print(marker_untrans_index)
+    mat <- mat[,-marker_untrans_index]
+  }
   marker <- colnames(mat)
   mat <- sinh(mat)*arg
   raw[,marker] <- mat[,marker]

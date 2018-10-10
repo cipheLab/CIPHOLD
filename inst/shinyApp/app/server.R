@@ -544,7 +544,7 @@ shinyServer(function(input, output, session) {
     args_transform <- input$args_transform
     if(is.na(input$args_transform)){args_transform <- 1}
 
-    print(groups.clustering)
+    # print(lisgroups.clustering)
 
     result <- run_clustering(flow.frames = listObject$flow.frames, 
       methods = "CLARA",
