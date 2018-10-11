@@ -1,5 +1,5 @@
 # CIPHoLD
-<code>install.packages(c("devtools","shiny","shinydashboard"))</code>
+<code>install.packages(c("devtools","shiny","shinydashboard","shinyjs"))</code>
 
 <code>library("devtools") </code>
 
