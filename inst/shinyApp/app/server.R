@@ -10,7 +10,7 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 if(length(new.packages)) install.packages(new.packages)
 list.of.biocondu <- c("flowCore","ggcyto")
 new.packages <- list.of.biocondu[!(list.of.biocondu %in% installed.packages()[,"Package"])]
-if(length(new.packages)){source("https://bioconductor.org/biocLite.R"); biocLite("flowCore")}
+if(length(new.packages)){source("https://bioconductor.org/biocLite.R"); biocLite("flowCore"); biocLite("ggcyto");}
 
 options(expressions = 5e5,shiny.maxRequestSize = 20 * 1024 ^ 3) #increase max file upload size to 20 Gb
 
