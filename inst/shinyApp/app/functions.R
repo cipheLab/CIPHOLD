@@ -9,164 +9,41 @@ options(stringsAsFactors = F)
 
 ##0. GLOBAL FUNCTIONS ----------------
 
-enrich.FCS.CIPHE <- function(target.fcs, new.column, values.range = 262144, flow.data = NULL)
+enrich.FCS.CIPHE <- function(original, new.column)
 {
-    if(is.null(flow.data)){
-      if(is.null(target.fcs@description[["SPILL"]])){
-        flow.data <- FALSE
-      } else {
-        flow.fata <- TRUE
-      }
-    }
-    if(is.null(colnames(new.column)))
-    {
-        colnames(new.column) <- paste0("new_",ncol(target.fcs@exprs))
-    }
-    new.mat <- cbind(target.fcs@exprs, new.column)
-    new.fcs <- flowFrame(new.mat, description = target.fcs@description)
 
-    levels(new.fcs@parameters@data[[2]]) <- c(target.fcs@parameters@data[[2]], colnames(new.column))
-    new.fcs@parameters@data[[2]] <- c(target.fcs@parameters@data[[2]], colnames(new.column))
-    if(flow.data) {
-        new.fcs@parameters@data[[3]] <- values.range
-        new.fcs@parameters@data[[4]] <- (0*as.numeric(!flow.data) - 111*as.numeric(flow.data))
-        new.fcs@parameters@data[[5]] <- values.range-1
-    } else {
-        new.fcs@parameters@data[[3]] <- c(target.fcs@parameters@data[[3]], max(as.numeric(new.column)))
-        new.fcs@parameters@data[[4]] <- c(target.fcs@parameters@data[[4]], 0)
-        new.fcs@parameters@data[[5]] <- c(target.fcs@parameters@data[[5]], max(as.numeric(new.column))-1)
-    }
+  new_p <- parameters(original)[1,]
 
-    if(flow.data)
-    {
-        if(!is.null(target.fcs@description[["APPLY COMPENSATION"]]))
-        {
-            new.fcs@description[["APPLY COMPENSATION"]] <- target.fcs@description[["APPLY COMPENSATION"]]
-        }
-        if(!is.null(target.fcs@description[["SPILL"]]))
-        {
-            new.fcs@description[["SPILL"]] <- target.fcs@description[["SPILL"]]
-        }
-    }
-    if(!is.null(target.fcs@description[["$TIMESTEP"]]))
-    {
-        new.fcs@description[["$TIMESTEP"]] <- target.fcs@description[["$TIMESTEP"]]
-    }
+  ## Now, let's change it's name from $P1 to $P26 (or whatever the next new number is)
+  new_p_number <- as.integer(dim(original)[2]+1)
+  rownames(new_p) <- c(paste0("$P", new_p_number))
 
-    return(new.fcs)
-}
+  ## Now, let's combine the original parameter with the new parameter 
+  library('BiocGenerics') ## for the combine function
+  allPars <- combine(parameters(original), new_p)
 
-write.FCS.CIPHE <- function(fcs, fcs.path, values.range = 262144, flow.data = T)
-{
-  if(is.null(flow.data)){
-      if(is.null(target.fcs@description[["SPILL"]])){
-        flow.data <- FALSE
-      } else {
-        flow.fata <- TRUE
-      }
-    }
-  
-    fcs.out <- flowFrame(fcs@exprs)
+  ## Fix the name and description of the newly added parameter, say we want to be calling it cluster_id
+  new_p_name <- colnames(new.column)
+  allPars@data$name[new_p_number] <- new_p_name
+  allPars@data$desc[new_p_number] <- new_p_name
 
-    descR <- description(fcs.out)
-    lapply(1:ncol(fcs@exprs),function(x)
-    {
-        if(flow.data)
-        {
-            descR[[paste0("$P",x,"R")]] <<- values.range
-        }
-        else
-        {
-            descR[[paste0("$P",x,"R")]] <<- description(fcs)[[paste0("$P",x,"R")]]
-        }
-        descR[[paste0("$P",x,"S")]] <<- description(fcs)[[paste0("$P",x,"S")]]
-    })
-    pd <- pData(parameters(fcs))
-    for(p in seq_along(pd[["name"]]))
-    {
-        descR[[sprintf("flowCore_$P%sRmax", p)]] <- pd[p,"minRange"]
-        descR[[sprintf("flowCore_$P%sRmin", p)]] <- pd[p,"maxRange"]
-    }
-    levels(fcs.out@parameters@data[[2]]) <- fcs@parameters@data[[2]]
-    fcs.out@parameters@data[[2]] <- fcs@parameters@data[[2]]
-    if(flow.data)
-    {
-        fcs.out@parameters@data[[3]] <- values.range
-        fcs.out@parameters@data[[4]] <- 0
-        fcs.out@parameters@data[[5]] <- values.range-1
-    }
-    else
-    {
-        fcs.out@parameters@data[[3]] <- c(fcs@parameters@data[[3]], max(as.numeric(new.column)))
-        fcs.out@parameters@data[[4]] <- c(fcs@parameters@data[[4]], 0)
-        fcs.outs@parameters@data[[5]] <- c(fcs@parameters@data[[5]], max(as.numeric(new.column))-1)
-    }
+  new_exprs <- cbind(original@exprs, new.column)
 
-    fcs.out <- flowFrame(fcs@exprs, description = descR, parameters = fcs.out@parameters)
-    if(flow.data)
-    {
-        if(!is.null(fcs@description[["$TIMESTEP"]]))
-        {
-            fcs.out@description[["$TIMESTEP"]] <- fcs@description[["$TIMESTEP"]]
-        }
-        if(!is.null(fcs@description[["APPLY COMPENSATION"]]))
-        {
-            fcs.out@description[["APPLY COMPENSATION"]] <- fcs@description[["APPLY COMPENSATION"]]
-        }
-    }
-    if(!is.null(fcs@description[["SPILL"]]))
-    {
-        fcs.out@description[["SPILL"]] <- fcs@description[["SPILL"]]
-    }
+  new_kw <- original@description
+  new_kw["$PAR"] <- as.character(new_p_number)
+  new_kw[paste0("$P",as.character(new_p_number),"N")] <- new_p_name
+  new_kw[paste0("$P",as.character(new_p_number),"S")] <- new_p_name
+  new_kw[paste0("$P",as.character(new_p_number),"E")] <- "0,0"
+  new_kw[paste0("$P",as.character(new_p_number),"G")] <- "1"
+  new_kw[paste0("$P",as.character(new_p_number),"B")] <- new_kw["$P1B"]
+  new_kw[paste0("$P",as.character(new_p_number),"R")] <- new_kw["$P1R"]
+  new_kw[paste0("flowCore_$P",as.character(new_p_number),"Rmin")] <- new_kw["flowCore_$P1Rmin"]
+  new_kw[paste0("flowCore_$P",as.character(new_p_number),"Rmax")] <- new_kw["flowCore_$P1Rmax"]
 
-    write.FCS(fcs.out, fcs.path)
-} 
+  ## Now, let's just combine it into a new flowFrame
+  new_fcs <- new("flowFrame", exprs=new_exprs, parameters=allPars, description=new_kw)
 
-updateFlowFrameKeywordsCIPHE <- function(flowFrame){
-  
-  row.names(flowFrame@parameters) <- paste0("$P",c(1:length(row.names(flowFrame@parameters))))
-  params = parameters(flowFrame)
-  pdata = pData(params)
-  for (i in 1:ncol(flowFrame)){
-    
-    s = paste("$P",i,"S",sep="");
-    n = paste("$P",i,"N",sep="");
-    r = paste("$P",i,"R",sep="");
-    b = paste("$P",i,"B",sep="");
-    e = paste("$P",i,"E",sep="");
-    fcmax1 <- paste("flowCore_$P",i,"Rmax",sep="");
-    fcmin1 <- paste("flowCore_$P",i,"Rmin",sep="");
-    fcmax <- paste("flowCore_P",i,"Rmax",sep="");
-    fcmin <- paste("flowCore_P",i,"Rmin",sep="");
-    display = paste0("P",i,"DISPLAY")
-    bs = paste0("P",i,"BS")
-    ms = paste0("P",i,"MS")
-
-    keyval=list();
-    label <- pData(flowFrame@parameters)[,"desc"][i]
-    if(is.na(label)) {label <- colnames(flowFrame)[i] }
-    keyval[[s]] = label
-    keyval[[n]] = colnames(flowFrame)[i]         
-    keyval[[r]] = ceiling(max(exprs(flowFrame)[,i])-min(exprs(flowFrame)[,i]))
-    keyval[[b]] = 32;
-    keyval[[e]] = "0,0";
-    keyval[[fcmax1]] <- ceiling(max(exprs(flowFrame)[,i])-min(exprs(flowFrame)[,i]))
-    keyval[[fcmin1]] <- ceiling(min(exprs(flowFrame)[,i]))
-    keyval[[fcmax]] <- ceiling(max(exprs(flowFrame)[,i])-min(exprs(flowFrame)[,i]))
-    keyval[[fcmin]] <- ceiling(min(exprs(flowFrame)[,i]))
-    keyval[[bs]] <- 0
-    keyval[[display]] <- "LOG"
-    keyval[[ms]] <- 0
-
-    keyword(flowFrame) = keyval;
-    pdata[i,"minRange"]=min(exprs(flowFrame)[,i])
-    pdata[i,"maxRange"]=max(exprs(flowFrame)[,i])
-    
-  }
-  pData(params)=pdata
-  parameters(flowFrame)=params
-  row.names(flowFrame@parameters) <- paste0("$P",c(1:length(row.names(flowFrame@parameters))))
-  return(flowFrame)
+  return(new_fcs)
 }
 
 #Depending on the OS different functions are to choose a directory because no one is currently crossplatform.
@@ -463,7 +340,8 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
         ff@exprs[, "sample"] <- as.matrix(file.params)
       }
       else {
-        ff <- cbind2(ff, as.matrix(file.params))
+        # ff <- cbind2(ff, as.matrix(file.params))
+        ff <- enrich.FCS.CIPHE(ff, file.params)
       }
       return(ff)
     })
@@ -473,6 +351,42 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
   cluster_flow_frame <- function (flow.frame, methods, outputDir, params, nb.cluster, name, groups.clustering = T, method.matrix = "median") {
 
     # source("ModifyFCS.R")
+    enrich.FCS.CIPHE <- function(original, new.column)
+    {
+
+      new_p <- parameters(original)[1,]
+
+      ## Now, let's change it's name from $P1 to $P26 (or whatever the next new number is)
+      new_p_number <- as.integer(dim(original)[2]+1)
+      rownames(new_p) <- c(paste0("$P", new_p_number))
+
+      ## Now, let's combine the original parameter with the new parameter 
+      library('BiocGenerics') ## for the combine function
+      allPars <- combine(parameters(original), new_p)
+
+      ## Fix the name and description of the newly added parameter, say we want to be calling it cluster_id
+      new_p_name <- colnames(new.column)
+      allPars@data$name[new_p_number] <- new_p_name
+      allPars@data$desc[new_p_number] <- new_p_name
+
+      new_exprs <- cbind(original@exprs, new.column)
+
+      new_kw <- original@description
+      new_kw["$PAR"] <- as.character(new_p_number)
+      new_kw[paste0("$P",as.character(new_p_number),"N")] <- new_p_name
+      new_kw[paste0("$P",as.character(new_p_number),"S")] <- new_p_name
+      new_kw[paste0("$P",as.character(new_p_number),"E")] <- "0,0"
+      new_kw[paste0("$P",as.character(new_p_number),"G")] <- "1"
+      new_kw[paste0("$P",as.character(new_p_number),"B")] <- new_kw["$P1B"]
+      new_kw[paste0("$P",as.character(new_p_number),"R")] <- new_kw["$P1R"]
+      new_kw[paste0("flowCore_$P",as.character(new_p_number),"Rmin")] <- new_kw["flowCore_$P1Rmin"]
+      new_kw[paste0("flowCore_$P",as.character(new_p_number),"Rmax")] <- new_kw["flowCore_$P1Rmax"]
+
+      ## Now, let's just combine it into a new flowFrame
+      new_fcs <- new("flowFrame", exprs=new_exprs, parameters=allPars, description=new_kw)
+
+      return(new_fcs)
+    }
     library("flowCore")
     library("plyr")
     
@@ -493,8 +407,8 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
     
     # over.clustering
     flow.frame.e <- flow.frame
-    # flow.frame.e <- enrich.FCS.CIPHE(flow.frame, new_col)
-    flow.frame.e <- cbind2(flow.frame, new_col)
+    flow.frame.e <- enrich.FCS.CIPHE(flow.frame, new_col)
+    # flow.frame.e <- cbind2(flow.frame, new_col)
     tab <- as.data.frame(flow.frame.e@exprs)
     names(tab) <- c(names(params.names), marker)
     if(method.matrix == "mean"){
@@ -566,8 +480,6 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
         ff <- deCompensateFlowFrame(ff, ff@description[["SPILL"]])
     }
     print("Writing FCS...")
-    ff <- updateFlowFrameKeywordsCIPHE(ff)
-    # write.FCS.CIPHE(ff, outname)
     write.FCS(ff, outname)
   })
 
@@ -630,7 +542,6 @@ get_matrix_from_fcs <- function(i, flow.frames, method.matrix="median", marker, 
 #This function is used to enrich fcs files with a cellType column after clustering
 fcs_enrichment <- function(fcs, groups, name) {
   fcs@exprs <- as.matrix(cbind(as.data.frame(fcs@exprs), cellType = groups))
-  fs <- updateFlowFrameKeywordsCIPHE(fs)
   write.FCS(fcs, name)
   return(fcs)
 }
@@ -1514,7 +1425,6 @@ export_clusters <- function(working.dir, sel.graph, sel.nodes)
   f <- flowFrame(as.matrix(d))
   p <- sprintf("scaffold_export_%s_", gsub(".fcs.clustered.txt", "", sel.graph))
   outname <- tempfile(pattern = p, tmpdir = working.dir, fileext = ".fcs")
-  f <- updateFlowFrameKeywordsCIPHE(f)
   write.FCS(f, outname)
 }
 
@@ -1693,7 +1603,8 @@ scaffold_events_export <- function(list1, list2, list.flow.frames, scaffold.data
     popIDscaffold <- as.matrix(as.numeric(pop.index))
     colnames(popIDscaffold) <- "popIDscaffold"
     
-    fcs.2 <- flowCore::cbind2(fcs, popIDscaffold)
+    # fcs.2 <- flowCore::cbind2(fcs, popIDscaffold)
+    fcs.2 <- enrich.FCS.CIPHE(fcs, popIDscaffold)
     return(fcs.2)
   })
   return(flow.frames.celltype)
@@ -1727,7 +1638,8 @@ scaffold_pop_mfi <- function(list1, list2, list.flow.frames, scaffold.data, mark
     popIDscaffold <- as.matrix(as.numeric(pop.index))
     colnames(popIDscaffold) <- "popIDscaffold"
     
-    fcs <- flowCore::cbind2(fcs, popIDscaffold)
+    # fcs <- flowCore::cbind2(fcs, popIDscaffold)
+    fcs <- enrich.FCS.CIPHE(fcs, popIDscaffold)
     
     res <- lapply(unique(fcs@exprs[,"popIDscaffold"]),function(y){
       mat <- fcs@exprs[which(fcs@exprs[,"popIDscaffold"]==y),]
@@ -1743,20 +1655,6 @@ scaffold_pop_mfi <- function(list1, list2, list.flow.frames, scaffold.data, mark
   
   return(table.mfi.pop)
 }
-
-updateTransformKeywords <- function(fr){
-  description(fr) <- list(transformation="custom")
-  desc <- description(fr)
-  pd <- pData(parameters(fr))
-  for(p in seq_along(pd[["name"]]))
-  { 
-    desc[[sprintf("flowCore_$P%sRmax", p)]] <- pd[p, "maxRange"]
-    desc[[sprintf("flowCore_$P%sRmin", p)]] <- pd[p, "minRange"]
-  }
-  desc
-}
-
-
 
 get.available.ram <- function()
 {

@@ -1621,7 +1621,6 @@ shinyServer(function(input, output, session) {
           fs <- c(fs, path)
           test <- updateTransformKeywords(fcs)
           fcs@description <- test
-          fcs <- updateFlowFrameKeywordsCIPHE(fcs)
           write.FCS(fcs, path)
         }
       }
