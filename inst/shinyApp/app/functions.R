@@ -566,7 +566,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
         ff <- deCompensateFlowFrame(ff, ff@description[["SPILL"]])
     }
     print("Writing FCS...")
-    # ff <- cytofCore.updateFlowFrameKeywords(ff)
+    ff <- updateFlowFrameKeywordsCIPHE(ff)
     # write.FCS.CIPHE(ff, outname)
     write.FCS(ff, outname)
   })
@@ -630,7 +630,7 @@ get_matrix_from_fcs <- function(i, flow.frames, method.matrix="median", marker, 
 #This function is used to enrich fcs files with a cellType column after clustering
 fcs_enrichment <- function(fcs, groups, name) {
   fcs@exprs <- as.matrix(cbind(as.data.frame(fcs@exprs), cellType = groups))
-  # fs <- cytofCore.updateFlowFrameKeywords(fs)
+  fs <- updateFlowFrameKeywordsCIPHE(fs)
   write.FCS(fcs, name)
   return(fcs)
 }
@@ -1514,7 +1514,7 @@ export_clusters <- function(working.dir, sel.graph, sel.nodes)
   f <- flowFrame(as.matrix(d))
   p <- sprintf("scaffold_export_%s_", gsub(".fcs.clustered.txt", "", sel.graph))
   outname <- tempfile(pattern = p, tmpdir = working.dir, fileext = ".fcs")
-  # f <- cytofCore.updateFlowFrameKeywords(f)
+  f <- updateFlowFrameKeywordsCIPHE(f)
   write.FCS(f, outname)
 }
 
