@@ -1704,8 +1704,6 @@ scaffold_pop_mfi <- function(list1, list2, list.flow.frames, scaffold.data, mark
   landmark <- scaffold_node_export(scaffold.data)
   all.table <- scaffold_pop_export(scaffold.data)
   node.index.x <- which(V(scaffold.data$graphs[[1]])$type==1)
-  
-  print(list1)
 
   table.mfi.pop <- lapply(c(1:length(list1)),function(x){
     fcs <- list.flow.frames[[list2[x]]]

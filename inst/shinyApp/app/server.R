@@ -1506,7 +1506,6 @@ shinyServer(function(input, output, session) {
     if(!is.null(listObject$scaffold.data)){
       if(is.null(listObject$over.clustering)){data <- listObject$flow.frames}
       if(is.null(listObject$flow.frames)){data <- listObject$over.clustering}
-      print("b")
             
       output$boxExportNames <- renderUI({
         box(title="Select names Map and Files", collapsible = TRUE, solidHeader=FALSE, status = "success", width="100%",
@@ -1622,6 +1621,7 @@ shinyServer(function(input, output, session) {
           fs <- c(fs, path)
           test <- updateTransformKeywords(fcs)
           fcs@description <- test
+          fcs <- updateFlowFrameKeywordsCIPHE(fcs)
           write.FCS(fcs, path)
         }
       }
