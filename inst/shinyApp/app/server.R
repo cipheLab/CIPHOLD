@@ -1619,7 +1619,7 @@ shinyServer(function(input, output, session) {
           fcs <- flow.frames[[i]]
           path <- gsub(".fcs$","_cellType.fcs",name)
           fs <- c(fs, path)
-          write.FCS(fcs, path)
+          write.FCS(fcs, path, delimiter="#")
         }
       }
       
