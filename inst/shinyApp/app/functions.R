@@ -641,6 +641,8 @@ process_files <- function(clusteredFiles, map.clustedFiles.names=NULL, G.attract
   names(tab) <- gsub("cellType", "groups", names(tab))
   names(tab) <- gsub("^X", "", names(tab))
   print(sprintf("Running with Edge weight: %f", ew_influence))
+  print(col.names.gated)
+  print(col.names.matrix)
   res <- process_data(tab, map.clustedFiles.names, G.attractors, tab.attractors,
           col.names.gated = col.names.gated, col.names.matrix = col.names.matrix, 
           att.labels = att.labels, already.clustered = T, ew_influence = ew_influence,
@@ -754,6 +756,8 @@ process_data <- function(tab, map.clustedFiles.names=NULL, G.attractors = NULL, 
     V(G.attractors)$x <- V(G.complete)$x[1:vcount(G.attractors)]
     V(G.attractors)$y <- V(G.complete)$y[1:vcount(G.attractors)]
   } else {
+    print(col.names.gated)
+    print(col.names.matrix)
     G.complete <- add_vertices_to_attractors_graph(G.attractors, tab.clustered, tab.attractors, col.names.att = col.names.gated, col.names.matrix = col.names.matrix, dist.thresh)
     
     fixed <- rep(FALSE, vcount(G.complete))
@@ -812,9 +816,9 @@ add_vertices_to_attractors_graph <- function(G, tab.clustered, tab.median, col.n
   V(G)[1:num.vertices]$type <- 1 #attractor
   V(G)[(num.vertices + 1):vcount(G)]$type <- 2 #cell
   
-  for(i in colnames(tab.clustered))
+  for(i in col.names.matrix){
     G <- set.vertex.attribute(G, name = i, index = (num.vertices + 1):vcount(G), value = tab.clustered[, i])
-    
+  }  
   
   G <- set_visual_attributes(G)
   return(G)

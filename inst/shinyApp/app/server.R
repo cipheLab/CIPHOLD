@@ -104,7 +104,7 @@ shinyServer(function(input, output, session) {
     if(input$tab != "mapping"){
       sep <- list("\t",",",".",";"," ")
       names(sep) <- c("tab",",",".",";","space")
-      box(title="Choose FCS or TxT File(s)",collapsible = TRUE,status = "primary", solidHeader = TRUE, width = 250,
+      shinydashboard::box(title="Choose FCS or TxT File(s)",collapsible = TRUE,status = "primary", solidHeader = TRUE, width = 250,
         fileInput("fileInput", "",
                 multiple = TRUE,
                 accept = c("text/csv",
