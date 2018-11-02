@@ -564,6 +564,7 @@ shinyServer(function(input, output, session) {
     listObject$flow.frames.enrich  <- result[[1]]
     listObject$flow.frames <- NULL
     listObject$over.clustering <- result[[2]]
+    print(listObject$over.clustering[[1]])
     names(listObject$over.clustering) <- gsub(".fcs$",".txt", names(listObject$over.clustering))
     output$output_clustering <- renderText("Clustering Done !!")
   })
@@ -795,7 +796,8 @@ shinyServer(function(input, output, session) {
     
     progress <- Progress$new()
     progress$set(message="Analysis...", value=1)
-     
+    
+    print(listObject$over.clustering[[1]])
     result <- run_analysis_gated(
           listObject$gated.flow.frames,
           listObject$over.clustering,

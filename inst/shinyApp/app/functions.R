@@ -387,6 +387,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
 
       return(new_fcs)
     }
+
     library("flowCore")
     library("plyr")
     
@@ -483,6 +484,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
     write.FCS(ff, outname, delimiter="#")
   })
 
+  # print(f2[[1]][,"popsize"])
   return(list(f1,f2))
 }
 
@@ -816,7 +818,7 @@ add_vertices_to_attractors_graph <- function(G, tab.clustered, tab.median, col.n
   V(G)[1:num.vertices]$type <- 1 #attractor
   V(G)[(num.vertices + 1):vcount(G)]$type <- 2 #cell
   
-  for(i in col.names.matrix){
+  for(i in colnames(tab.clustered)){
     G <- set.vertex.attribute(G, name = i, index = (num.vertices + 1):vcount(G), value = tab.clustered[, i])
   }  
   
