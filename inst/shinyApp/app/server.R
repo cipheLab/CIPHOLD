@@ -5,7 +5,7 @@ library("shinyjs")
 
 ## install all packages and check
 list.of.packages <- c("ggplot2", "Rcpp","cluster","igraph","plyr","reshape","scales",
-  "grDevices","parallel","jsonlite","doParallel","shiny","shinydashboard","shinyjs","gtools")
+  "grDevices","parallel","jsonlite","doParallel","shiny","shinydashboard","shinyjs","gtools","plotly","shinyHeatmaply")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 list.of.biocondu <- c("flowCore","ggcyto")
@@ -26,6 +26,8 @@ shinyServer(function(input, output, session) {
   library("igraph")
   library("plyr")
   library("reshape")
+  library("plotly")
+  library("shinyHeatmaply")
   progress$set(message="Load library", value=0.66)
   library("scales")
   library("grDevices")
@@ -544,7 +546,7 @@ shinyServer(function(input, output, session) {
     args_transform <- input$args_transform
     if(is.na(input$args_transform)){args_transform <- 1}
 
-    # print(lisgroups.clustering)
+    print(input$clusteringui_markers)
 
     result <- run_clustering(flow.frames = listObject$flow.frames, 
       methods = "CLARA",
@@ -567,6 +569,28 @@ shinyServer(function(input, output, session) {
     print(listObject$over.clustering[[1]])
     names(listObject$over.clustering) <- gsub(".fcs$",".txt", names(listObject$over.clustering))
     output$output_clustering <- renderText("Clustering Done !!")
+  })
+
+  observe({
+    if(is.null(listObject$over.clustering)){return(NULL)}
+    output$boxOverClustering <- renderUI({
+      box(title="Over Clustering", collapsible = TRUE, solidHeader = TRUE, width = "100%", id="inpuxBoxOverClustering",
+        selectInput("select.over.clustering","Select Over Clustering View",choice = names(listObject$over.clustering), selected = 1),
+        selectInput("select.params.heatmap","Select Param for Heatmap", 
+          choice = colnames(listObject$over.clustering[[1]]),
+          multiple=TRUE
+        ),
+        fluidRow(
+          column(6,actionButton("computeHeatmap","View Heatmap")),
+          column(6,downloadButton("ddlTabl","Download TXT"))
+        )
+      )
+    })
+    output$boxHeatmap <- renderUI({
+      box("", collapsible=TRUE, solidHeader=TRUE,width = "100%",
+        plotlyOutput("heatmap", width="100%", height="1200px")
+      )
+    })
   })
   
   output$ddlTabl <- downloadHandler(

@@ -122,7 +122,7 @@ my_save <- function(obj, f_name)
 
 logiclTransformCIPHE <- function(flow.frame, value = NULL, markers = NULL)
 {
-
+  print(markers)
   if(is.null(markers)){
     if(is.null(flow.frame@description[["SPILL"]])){
       markers.transform <- colnames(flow.frame)
@@ -313,7 +313,8 @@ pre_process_fcs <- function(flow.frames, arg, transformation, compens, marker_un
       marker_trans <- colnames(flow.frame)[-which(colnames(flow.frame)%in%marker_untrans)]
       flow.frame <- arcsinhTransCIPHE(flow.frame, marker_trans, arg)
     } else if(transformation == "Logicle"){
-      flow.frame <- logiclTransformCIPHE(flow.frame, arg) # transform value
+      marker_trans <- colnames(flow.frame)[-which(colnames(flow.frame)%in%marker_untrans)]
+      flow.frame <- logiclTransformCIPHE(flow.frame, arg, marker_trans) # transform value
     }
     return(flow.frame)
   })
@@ -472,7 +473,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
     if (!is.na(transComp[4])) {
       if (transComp[2] == "Logicle") {
         print("Logicle detransformation...")
-        ff <- inversLogiclTransformCIPHE(ff)
+        ff <- inversLogiclTransformCIPHE(ff, markers=marker_untrans)
       } else if (transComp[2] == "Asinh") {
         ff <- inversArcsinhTransCIPHE(ff, c(marker.enrich,marker_untrans,"sample"), as.integer(transComp[3]))
       }

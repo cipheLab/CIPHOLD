@@ -1,6 +1,6 @@
 library("shinydashboard")
 library("shinyjs")
-
+library("shinyHeatmaply")
 source("functions.R")
 
 dashboardPage(
