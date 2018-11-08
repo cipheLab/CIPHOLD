@@ -186,7 +186,9 @@ shinyServer(function(input, output, session) {
       new.over.clustering <-lapply(as.vector(listObject$datapaths), function(x) {
         i <<- i+1
         progress$set(value=i/length(as.vector(listObject$datapaths)))
-        return(read.csv(x, sep=input$separator, check.names = F))
+        mat <- read.csv(x, sep=input$separator, check.names = F)
+        mat <- mat[,-(which(""==colnames(mat)))]
+        return(mat)
       })
 
       listObject$over.clustering  <- c(listObject$over.clustering, new.over.clustering)
@@ -211,7 +213,9 @@ shinyServer(function(input, output, session) {
     new.over.clustering <-lapply(as.vector(listObject$datapaths), function(x) {
       i <<- i+1
       progress$set(value=i/length(as.vector(listObject$datapaths)))
-      return(read.csv(x, sep=input$separator, check.names = F))
+      mat <- read.csv(x, sep=input$separator, check.names = F)
+      mat <- mat[,-(which(""==colnames(mat)))]
+      return(mat)
     })
     listObject$over.clustering  <- new.over.clustering
     names(listObject$over.clustering) <- filesname
