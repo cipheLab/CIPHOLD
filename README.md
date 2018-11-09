@@ -1,5 +1,5 @@
 # CIPHoLD
-<code>install.packages(c("devtools","shiny","shinydashboard","shinyjs"))</code>
+<code>install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply))</code>
 
 <code>source("https://bioconductor.org/biocLite.R")</code>
 
