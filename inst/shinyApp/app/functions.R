@@ -123,7 +123,7 @@ my_save <- function(obj, f_name)
 logiclTransformCIPHE <- function(flow.frame, value = NULL, markers = NULL)
 {
   print(markers)
-  if(is.null(markers)){
+  if(is.null(markers) || length(markers)<1){
     if(is.null(flow.frame@description[["SPILL"]])){
       markers.transform <- colnames(flow.frame)
     } else {
