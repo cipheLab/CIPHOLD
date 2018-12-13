@@ -1600,11 +1600,11 @@ scaffold_events_export <- function(list1, list2, list.flow.frames, scaffold.data
     pop.index <- unlist(lapply(new_col.2,function(j){
 
       ### QUICK DEBUG HERE################################################
-      if(length(grep(i,landmark[,"pop Names"]))>0){#######################
+      #if(length(grep(i,landmark[,"pop Names"]))>0){#######################
 
         return(landmark[which(j==landmark[,"pop Names"]),"pop ID"])
-        
-      }###################################################################
+
+      #}###################################################################
       ####################################################################
 
     }))
