@@ -1597,7 +1597,17 @@ scaffold_events_export <- function(list1, list2, list.flow.frames, scaffold.data
     rdata <- fcs@exprs
     new_col.1 <- matrix(rdata[,marker_e], nrow = nrow(rdata), ncol = 1, dimnames = list(NULL, marker_e))
     new_col.2 <- as.vector(table[new_col.1,"pop"])
-    pop.index <- unlist(lapply(new_col.2,function(j){return(landmark[which(j==landmark[,"pop Names"]),"pop ID"])}))
+    pop.index <- unlist(lapply(new_col.2,function(j){
+
+      ### QUICK DEBUG HERE################################################
+      if(length(grep(i,landmark[,"pop Names"]))>0){#######################
+
+        return(landmark[which(j==landmark[,"pop Names"]),"pop ID"])
+        
+      }###################################################################
+      ####################################################################
+
+    }))
     
     popIDscaffold <- as.matrix(as.numeric(pop.index))
     colnames(popIDscaffold) <- "popIDscaffold"
