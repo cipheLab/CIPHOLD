@@ -1,5 +1,6 @@
 # CIPHoLD
-<code>install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply")) \n
+<code>
+install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))
 install.packages("lme4")
 </code>
 
