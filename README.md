@@ -7,6 +7,7 @@ To use this tool you need a windows computer with :
   <li>R tools 3.5 (administrateor installation and check "Path environment" box during installation)</li>
   <li>Google Chrome browser (to download zip output correctly)</li>
 </ul>
+<p>Now run your Rstudio and you can copy paste this commande line to install all apcajges requierd by CIPHoLD tools: </p>
 <code>
 install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))
 install.packages("lme4")
