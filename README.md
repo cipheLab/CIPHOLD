@@ -11,14 +11,19 @@ To use this tool you need a windows computer with :
 
 <code>
 install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply")) 
+  
 install.packages("lme4")
 
 install.packages("BiocManager")
+
 BiocManager::install("flowCore", version = "3.8")
+
 BiocManager::install("ggcyto", version = "3.8")
 
-install_github("cipheLab/CIPHoLD")</code>
+install_github("cipheLab/CIPHoLD")
+
 library("CIPHoLD")
+
 CIPHoLD.run()
 </code>
 
