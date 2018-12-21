@@ -1,4 +1,5 @@
 # CIPHoLD
+<h1> Install dependencies </h1>
 <code>
 install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))
 install.packages("lme4")
