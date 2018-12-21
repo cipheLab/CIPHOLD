@@ -1,5 +1,7 @@
 # CIPHoLD
-<code>install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))</code>
+<code>install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply")) \n
+install.packages("lme4")
+</code>
 
 <code>source("https://bioconductor.org/biocLite.R")</code>
 
