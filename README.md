@@ -9,14 +9,14 @@ To use this tool you need a windows computer with :
 </ul>
 <p>Now run your Rstudio and you can copy paste this commande line to install all apcajges requierd by CIPHoLD tools: </p>
 
-install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))
-install.packages("lme4")
-install.packages("BiocManager")
-BiocManager::install("flowCore", version = "3.8")
-BiocManager::install("ggcyto", version = "3.8")
-install_github("cipheLab/CIPHoLD")
-library("CIPHoLD")
-CIPHoLD.run()
+install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))<br/>
+install.packages("lme4")<br/>
+install.packages("BiocManager")<br/>
+BiocManager::install("flowCore", version = "3.8")<br/><br/>
+BiocManager::install("ggcyto", version = "3.8")<br/>
+install_github("cipheLab/CIPHoLD")<br/>
+library("CIPHoLD")<br/>
+CIPHoLD.run()<br/>
 
 
 <h1> Run Tool </h1>
