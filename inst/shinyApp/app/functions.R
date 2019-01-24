@@ -482,7 +482,8 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
         ff <- deCompensateFlowFrame(ff, ff@description[["SPILL"]])
     }
     print("Writing FCS...")
-    write.FCS(ff, outname, delimiter="#")
+    # write.FCS(ff, outname, delimiter="#")
+    write.FCS(ff, outname)
   })
 
   # print(f2[[1]][,"popsize"])
@@ -1424,7 +1425,8 @@ export_clusters <- function(working.dir, sel.graph, sel.nodes)
   f <- flowFrame(as.matrix(d))
   p <- sprintf("scaffold_export_%s_", gsub(".fcs.clustered.txt", "", sel.graph))
   outname <- tempfile(pattern = p, tmpdir = working.dir, fileext = ".fcs")
-  write.FCS(f, outname, delimiter="#")
+  # write.FCS(f, outname, delimiter="#")
+  write.FCS(f, outname)
 }
 
 get_graph_centering_transform <- function(x, y, svg.width, svg.height)
