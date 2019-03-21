@@ -9,7 +9,7 @@ To use this tool you need a windows computer with :
 </ul>
 <p>Now run your Rstudio and you can copy paste this commande line to install all apcajges requierd by CIPHoLD tools: </p>
 
-<code>
+```
   install.packages(c("devtools","shiny","shinydashboard","shinyjs","gtools","shinyHeatmaply"))
   install.packages("lme4")
   install.packages("BiocManager")
@@ -17,14 +17,14 @@ To use this tool you need a windows computer with :
   BiocManager::install("ggcyto", version = "3.8")
   library("devtools")
   install_github("cipheLab/CIPHoLD")
-</code>
+```
 
 <h3> Run Tool </h3>
 
-<code>
+```
   library("CIPHoLD")
   CIPHoLD.run()
-</code>
+```
 
 <h3> Presentation </h3>
 CIPHoLD Tools is a rewrite of SCAFFOLD tools (https://github.com/nolanlab/scaffold). 
