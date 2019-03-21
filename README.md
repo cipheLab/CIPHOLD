@@ -19,18 +19,42 @@ To use this tool you need a windows computer with :
   install_github("cipheLab/CIPHoLD")
 </code>
 
-<h1> Run Tool </h1>
+<h3> Run Tool </h3>
 
 <code>
   library("CIPHoLD")
   CIPHoLD.run()
 </code>
 
+<h3> Presentation </h3>
 CIPHoLD Tools is a rewrite of SCAFFOLD tools (https://github.com/nolanlab/scaffold). 
-<ul> Difference with scaffold 
+<ul> <h4>Difference with scaffold</h4> 
   <li> File manager </li>
+  <li> Upload CSV file (clustering from other tools) </li>
   <li> Add other clustering method </li>
   <li> Write annotation in FCS files </li>
   <li> All interface update with dashboard </li>
+  <li> Different output format and information </li>
 </ul>
 We decide to change the input and output system. 
+
+<h3> Upload Data </h3>
+<p>You can upload FCS in first tab and create group. Group creation is just a concatenation of FCS with new parameters used to save the files id (sample)</p>
+<p>You can upload csv table, with this files you don't need to clustering. Its result of clustering parts </p>
+  
+ <h3> Clustering </h3>
+ 
+ 
+ <h3> Gated Files and Map creation </h3>
+ 
+ 
+ <h3> Map new dataset </h3>
+ 
+ 
+ <h3> Explore Mapping </h3>
+ 
+ 
+ <h3> Download Annotation </h3>
+ 
+ 
+ 
