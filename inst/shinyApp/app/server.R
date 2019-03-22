@@ -12,6 +12,7 @@ list.of.biocondu <- c("flowCore","ggcyto")
 new.packages <- list.of.biocondu[!(list.of.biocondu %in% installed.packages()[,"Package"])]
 if(length(new.packages)){source("https://bioconductor.org/biocLite.R"); biocLite("flowCore"); biocLite("ggcyto");}
 
+options(expressions = 5e5,shiny.maxRequestSize = 20 * 1024 ^ 3)
 
 shinyServer(function(input, output, session) {
   session$onSessionEnded(stopApp)
