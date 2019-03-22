@@ -57,9 +57,9 @@ We decide to change the input and output system.
 
 <p>You can upload csv table, with this files you don't need to clustering. Its result of clustering parts </p>
   
- <h2 Clustering </h2>
+ <h2> Clustering </h2>
  
- The clustering is an over-clustering. You need ask more than 100 clusters to make works the annotation. With CIPHoLD you can use gated file from one technology (flow, mass, rnaseq, etc..) for create map and annotate fcs file from other technology, because you can use different transformation on clustered file and gated files.
+ <p>The clustering is an over-clustering. You need ask more than 100 clusters to make works the annotation. With CIPHoLD you can use gated file from one technology (flow, mass, rnaseq, etc..) for create map and annotate fcs file from other technology, because you can use different transformation on clustered file and gated files.</p>
  
  <img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" >
  
