@@ -47,19 +47,21 @@ We decide to change the input and output system.
 
 <h2> Upload Data </h2>
 <p>You can upload FCS in first tab and create group. Group creation is just a concatenation of FCS with new parameters used to save the files id (sample)</p>
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=500px/>
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=600px/>
 
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" width=500px/>
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" width=600px/>
 
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/03.png" width=500px/>
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/03.png" width=600px/>
 
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" width=500px/>
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" width=600px/>
 
 <p>You can upload csv table, with this files you don't need to clustering. Its result of clustering parts </p>
   
  <h2 Clustering </h2>
  
  The clustering is an over-clustering. You need ask more than 100 clusters to make works the annotation. With CIPHoLD you can use gated file from one technology (flow, mass, rnaseq, etc..) for create map and annotate fcs file from other technology, because you can use different transformation on clustered file and gated files.
+ 
+ <img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" >
  
  <h2> Gated Files and Map creation </h2>
  
