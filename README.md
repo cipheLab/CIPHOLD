@@ -40,7 +40,7 @@ We decide to change the input and output system.
 
 <h2> Upload Data </h2>
 <p>You can upload FCS in first tab and create group. Group creation is just a concatenation of FCS with new parameters used to save the files id (sample)</p>
-![alt text](cipheLab/CIPHoLD/blob/master/doc/img/01.png)
+![alt text](https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png)
 
 <p>You can upload csv table, with this files you don't need to clustering. Its result of clustering parts </p>
   
