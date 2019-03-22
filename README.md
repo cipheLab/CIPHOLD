@@ -61,7 +61,11 @@ We decide to change the input and output system.
  
  <p>The clustering is an over-clustering. You need ask more than 100 clusters to make works the annotation. With CIPHoLD you can use gated file from one technology (flow, mass, rnaseq, etc..) for create map and annotate fcs file from other technology, because you can use different transformation on clustered file and gated files.</p>
  
- <img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" >
+ <img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/05.png" >
+ 
+ <p> 1 : a : Select transform function you want use, arcsinh (masse data with 5 in argument or 150 for flow data) or logicle transform with biexp arg (value below zero save in fcs as $PnW keyword for each parameters </p>
+ <p> 1 : b : Select argument in transform function </p>
+ <p> 1 : c </p>
  
  <h2> Gated Files and Map creation </h2>
  
