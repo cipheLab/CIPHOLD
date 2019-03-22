@@ -12,7 +12,6 @@ list.of.biocondu <- c("flowCore","ggcyto")
 new.packages <- list.of.biocondu[!(list.of.biocondu %in% installed.packages()[,"Package"])]
 if(length(new.packages)){source("https://bioconductor.org/biocLite.R"); biocLite("flowCore"); biocLite("ggcyto");}
 
-options(expressions = 5e5,shiny.maxRequestSize = 20 * 1024 ^ 3) #increase max file upload size to 20 Gb
 
 shinyServer(function(input, output, session) {
   session$onSessionEnded(stopApp)
@@ -186,9 +185,10 @@ shinyServer(function(input, output, session) {
       new.over.clustering <-lapply(as.vector(listObject$datapaths), function(x) {
         i <<- i+1
         progress$set(value=i/length(as.vector(listObject$datapaths)))
-        mat <- read.csv(x, sep=input$separator, check.names = F)
-        mat <- mat[,-(which(""==colnames(mat)))]
-        return(mat)
+        #mat <- read.csv(x, sep=input$separator, check.names = F)
+        #mat <- mat[,-(which(""==colnames(mat)))]
+        #return(mat)
+		return(read.csv(x, sep=input$separator, check.names = F))
       })
 
       listObject$over.clustering  <- c(listObject$over.clustering, new.over.clustering)
@@ -213,9 +213,10 @@ shinyServer(function(input, output, session) {
     new.over.clustering <-lapply(as.vector(listObject$datapaths), function(x) {
       i <<- i+1
       progress$set(value=i/length(as.vector(listObject$datapaths)))
-      mat <- read.csv(x, sep=input$separator, check.names = F)
-      mat <- mat[,-(which(""==colnames(mat)))]
-      return(mat)
+      #mat <- read.csv(x, sep=input$separator, check.names = F)
+      #mat <- mat[,-(which(""==colnames(mat)))]
+      #return(mat)
+	return(read.csv(x, sep=input$separator, check.names = F))
     })
     listObject$over.clustering  <- new.over.clustering
     names(listObject$over.clustering) <- filesname

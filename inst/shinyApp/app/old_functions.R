@@ -48,17 +48,17 @@ enrich.FCS.CIPHE <- function(original, new.column)
 
 #Depending on the OS different functions are to choose a directory because no one is currently crossplatform.
 chooseDir <-  function() {
-  # OS <- Sys.info()["sysname"]
-  #   if (OS=="Windows") {
-  #   Dir <-
-  #     choose.dir(default = "", caption = "Select a Folder for saving:")
-  #   }
-  #   else {
-  Dir <- tcltk::tk_choose.dir(default = "", caption = "Select a Folder for saving:")
-  # }
-  # else {
-  #   Dir <- choose.mac.dir()
-  #   }
+  OS <- Sys.info()["sysname"]
+    if (OS=="Windows") {
+    Dir <-
+      choose.dir(default = "", caption = "Select a Folder for saving:")
+    }
+    else if (OS=="Linux") {
+      Dir <- tk_choose.dir(default = "", caption = "Select a Folder for saving:")
+      }
+    else {
+      Dir <- choose.mac.dir()
+      }
   return(Dir)
 }
 
@@ -352,11 +352,6 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
   cluster_flow_frame <- function (flow.frame, methods, outputDir, params, nb.cluster, name, groups.clustering = T, method.matrix = "median") {
 
     # source("ModifyFCS.R")
-    library('BiocGenerics') ## for the combine function
-    library("flowCore")
-    library("flowAI")
-    library("plyr")
-    
     enrich.FCS.CIPHE <- function(original, new.column)
     {
 
@@ -367,7 +362,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
       rownames(new_p) <- c(paste0("$P", new_p_number))
 
       ## Now, let's combine the original parameter with the new parameter 
-      # library('BiocGenerics') ## for the combine function
+      library('BiocGenerics') ## for the combine function
       allPars <- combine(parameters(original), new_p)
 
       ## Fix the name and description of the newly added parameter, say we want to be calling it cluster_id
@@ -394,8 +389,8 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
       return(new_fcs)
     }
 
-    # library("flowCore")
-    # library("plyr")
+    library("flowCore")
+    library("plyr")
     
     m <- flow.frame@exprs[,params]
     
@@ -406,13 +401,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
     
     
     # clustering
-    if(methods == "CLARA"){
-      groups <- cluster::clara(m,k=nb.cluster,samples=args)$clustering
-    } else if(methods == "FlowSOM"){
-      groups <- SOM(ReadInput(flow.frame[,params]),xgrid=args,ygrid=args)$map$mapping[,1]
-    } else if(methods == "kmeans"){
-      groups <- stats::kmeans(m, centers=nb.cluster)$cluster
-    }
+    groups <- cluster::clara(m,k=nb.cluster,samples=args)$clustering
     new_col <- as.matrix(groups)
     marker <- paste0(methods, ".", dim(flow.frame@exprs)[2]+1)
     colnames(new_col) <- marker
@@ -506,13 +495,9 @@ get_matrix_from_fcs <- function(i, flow.frames, method.matrix="median", marker, 
   ) {
   
   flow.frame <- flow.frames[[i]]
-  
-  #avoid bugs when sample column missing
-  if(!"sample"%in%colnames(flow.frame@exprs))
-  {
-    flow.frame@exprs <- cbind(flow.frame@exprs, sample=1)
-    pData(flow.frame@parameters) <- rbind(pData(flow.frame@parameters), sample=c("sample", "sample", 1, 0, 2))
-  }
+  # if(need.transform == TRUE){
+  #   flow.frame <- pre_process_fcs(flow.frames, arg, transformation, compens))
+  # }
   tab <- as.data.frame(flow.frame@exprs)
   
   labels <- pData(parameters(flow.frame))[,2]
@@ -639,12 +624,10 @@ downsample_by <- function(tab, col.name, size)
 
 #Function used to process files into objects containing graphs and data.
 process_files <- function(clusteredFiles, map.clustedFiles.names=NULL, G.attractors, tab.attractors, att.labels, col.names.gated, 
-                          col.names.matrix, scaffold.mode, ref.scaffold.markers = NULL, ew_influence = NULL,col.names.inter_cluster = NULL, ...)
+                          col.names.matrix, scaffold.mode, ref.scaffold.markers = NULL, 
+                          names.mapping = NULL, ew_influence = NULL,col.names.inter_cluster = NULL, ...)
 {
   ret <- list(graphs = list(), clustered.data = list())
-  
-  names.mapping <- col.names.gated
-  names(names.mapping) <- col.names.matrix
   map_names <- names_map_factory(names.mapping)
 
   if(is.null(map.clustedFiles.names)){
@@ -653,54 +636,19 @@ process_files <- function(clusteredFiles, map.clustedFiles.names=NULL, G.attract
 
   print(paste("Processing ",map.clustedFiles.names, sep = " "))
   tab <- clusteredFiles[[map.clustedFiles.names]]
-  
-  if(""%in%colnames(tab))
-  {
-    index.null <- which(colnames(tab)=="")
-    if (index.null[1] == 1){
-      tab <- tab[,2:length(colnames(tab))]
-      index.null <- which(colnames(tab)=="")
-    }
-    if(length(index.null) < 0) 
-    {
-      for (i in index.null){
-        colnames(tab)[i] <- paste0("NA.", i)
-      }
-    }
-  }
-  
-  index <- c()
-  for(i in 1:length(col.names.matrix)){
-    index <- c(index, which(col.names.matrix[i]==colnames(tab)))
-  }
-  # View(index)
-  # View(colnames(tab))
-  # scan()
-  # for (i in 1:length(index))
-  # {
-  #   print(colnames(tab)[index[i]])
-  #   print(col.names.matrix[i])
-  #   colnames(tab)[index[i]] <- col.names.matrix[i]
-  # }
-  colnames(tab)[index] <- col.names.gated
-  # View(colnames(tab))
-
-
-  # colnames(tab) <- map_names(colnames(tab))
-  # names(tab) <- colnames(tab)
-  
-  
+  names(tab) <- map_names(names(tab))
   col.names.inter_cluster <- map_names(col.names.inter_cluster)
 
   if(is.null(ew_influence)) ew_influence <- ceiling(length(col.names.gated) / 3)
-  
-  tab <- tab[!apply(tab[, col.names.gated], 1, function(x) {all(x == 0)}),]
+
+  tab <- tab[!apply(tab[, col.names.matrix], 1, function(x) {all(x == 0)}),]
   names(tab) <- gsub("cellType", "groups", names(tab))
   names(tab) <- gsub("^X", "", names(tab))
   print(sprintf("Running with Edge weight: %f", ew_influence))
-
+  print(col.names.gated)
+  print(col.names.matrix)
   res <- process_data(tab, map.clustedFiles.names, G.attractors, tab.attractors,
-          col.names.gated = col.names.gated, col.names.matrix = col.names.gated, 
+          col.names.gated = col.names.gated, col.names.matrix = col.names.matrix, 
           att.labels = att.labels, already.clustered = T, ew_influence = ew_influence,
           col.names.inter_cluster = col.names.inter_cluster, ...)
   G.complete <- get_highest_scoring_edges(res$G.complete)
@@ -714,26 +662,7 @@ process_files <- function(clusteredFiles, map.clustedFiles.names=NULL, G.attract
     } else {
       print(paste("Processing", names(clusteredFiles)[[i]], sep = " "))
       tab <- clusteredFiles[[i]]
-      
-      if(""%in%colnames(tab))
-      {
-        index.null <- which(colnames(tab)=="")
-        if (index.null[1] == 1){
-          tab <- tab[,2:length(colnames(tab))]
-          index.null <- which(colnames(tab)=="")
-        }
-        if(length(index.null) < 0) 
-        {
-          for (i in index.null){
-            colnames(tab)[i] <- paste0("NA", i)
-          }
-        }
-      }
-      
-      colnames(tab)[index] <- col.names.gated
-      # colnames(tab) <- map_names(colnames(tab))
-      # names(tab) <- colnames(tab)
-      
+      names(tab) <- map_names(names(tab))
       col.names.inter_cluster <- map_names(col.names.inter_cluster)
       
       if(scaffold.mode == "existing") {
@@ -746,13 +675,12 @@ process_files <- function(clusteredFiles, map.clustedFiles.names=NULL, G.attract
       } else {
         if(is.null(ew_influence)) ew_influence <- ceiling(length(col.names.gated) / 3)
       }
-      
-      tab <- tab[!apply(tab[, col.names.gated], 1, function(x) {all(x == 0)}),]
+      tab <- tab[!apply(tab[, col.names.matrix], 1, function(x) {all(x == 0)}),]
       names(tab) <- gsub("cellType", "groups", names(tab))
       names(tab) <- gsub("^X", "", names(tab))
       print(sprintf("Running with Edge weight: %f", ew_influence))
       res <- process_data(tab, map.clustedFiles.names, G.attractors, tab.attractors,
-                          col.names.gated = col.names.gated, col.names.matrix = col.names.gated, 
+                          col.names.gated = col.names.gated, col.names.matrix = col.names.matrix, 
                           att.labels = att.labels, already.clustered = T, ew_influence = ew_influence,
                           col.names.inter_cluster = col.names.inter_cluster, ...)
       G.complete <- get_highest_scoring_edges(res$G.complete)
@@ -765,49 +693,41 @@ process_files <- function(clusteredFiles, map.clustedFiles.names=NULL, G.attract
   return(ret)
 }
 
-
-
-get_highest_scoring_edges <- function(G) {
-  
-  E(G)$cluster_to_landmark <- 0
-  E(G)$highest_scoring <- 0
-  E(G)$inter_cluster <- 0
-  
-  e <- igraph::get.edges(G, E(G))
+get_highest_scoring_edges <- function(G)
+{
+  #Remove inter-cluster edges for this calculation
+  e <- get.edges(G, E(G))
   E(G)$edge_type <- "cluster_to_landmark"
   e <- cbind(V(G)$type[e[,1]], V(G)$type[e[,2]])
+  to.remove <- (e[,1] == 2) & (e[,2] == 2)
   E(G)$edge_type[(e[,1] == 2) & (e[,2] == 2)] <- "inter_cluster"
-  
-  inter.cluster <- e[, 1] == 2 & e[, 2] == 2
-  to.landmark <-(e[, 1] == 2 & e[, 2] == 1) |  (e[, 1] == 1 & e[, 2] == 2)
-  
-  E(G)$inter_cluster[inter.cluster] <- 1
-  E(G)$cluster_to_landmark[to.landmark] <- 1
-  
-  # Remove inter-cluster edges for this calculation
-  g.temp <- igraph::delete.edges(G, E(G)[inter.cluster])
+  g.temp <- delete.edges(G, E(G)[to.remove])
   
   V(g.temp)$highest_scoring_edge <- 0
-
-  for(i in 1:(igraph::vcount(g.temp))) {
-    if(V(g.temp)$type[i] == 2) {
-      sel.edges <- igraph::incident(g.temp, i)
+  for(i in 1:vcount(g.temp))
+  {
+    if(V(g.temp)$type[i] == 2)
+    {
+      sel.edges <- incident(g.temp, i)
       max.edge <- sel.edges[which.max(E(G)[sel.edges]$weight)]
-      
-
-      if(length(max.edge) != 0){
-        V(g.temp)$highest_scoring_edge[i] <- max.edge
-        E(G)$highest_scoring[max.edge] <- 1
-        E(G)$edge_type[max.edge] <- "highest_scoring"
-        }
-      else {
-        print("A vertex has no highest scoring edge...")
-        V(g.temp)$highest_scoring_edge[i] <- 0
-        }
+      V(g.temp)$highest_scoring_edge[i] <- max.edge
+      E(G)$edge_type[max.edge] <- "highest_scoring"
     }
   }
   V(G)$highest_scoring_edge <- V(g.temp)$highest_scoring_edge
   return(G)
+}
+
+names_map_factory <- function(names.map)
+{
+  function(v)
+  {
+    sel <- v %in% names(names.map)
+    if(any(sel))
+      v[sel] <- names.map[v[sel]]
+    return(v)
+    
+  }
 }
 
 process_data <- function(tab, map.clustedFiles.names=NULL, G.attractors = NULL, tab.attractors = NULL, col.names.gated = NULL, col.names.matrix = NULL, att.labels = NULL, dist.thresh = 0.7,
@@ -815,17 +735,16 @@ process_data <- function(tab, map.clustedFiles.names=NULL, G.attractors = NULL, 
                          overlap_method = NULL){
   
   if(!already.clustered) {
-    tab <- cluster_data(tab, col.names)
+    tab <- cluster_data(tab, col.names.matrix)
     tab.clustered <- ddply(tab, ~groups, colwise(median))
   }
   else
     tab.clustered <- tab
   
   if(is.null(col.names.inter_cluster) || col.names.inter_cluster == "")
-    col.names.inter_cluster = col.names.gated
+    col.names.inter_cluster = col.names.matrix
   if(is.null(G.attractors)) {
-    G.attractors <- build_graph(tab.attractors, col.names.gated)
-
+    G.attractors <- build_graph(tab.attractors, col.names.gated) #marque page
     G.complete <- add_vertices_to_attractors_graph(G.attractors, tab.clustered, tab.attractors, col.names.att = col.names.gated, col.names.matrix = col.names.matrix, dist.thresh)
     G.complete <- complete.forceatlas2(G.complete, first.iter = 50000,
                                        overlap.iter = 20000, ew_influence = ew_influence, overlap_method = "repel")
@@ -865,12 +784,6 @@ process_data <- function(tab, map.clustedFiles.names=NULL, G.attractors = NULL, 
   return(list(G.attractors = G.attractors, G.complete = G.complete, tab.attractors = tab.attractors, tab = tab, col.names.gated = col.names.gated, col.names.matrix = col.names.matrix))
 }
 
-add_landmarks_labels <- function(G, v) {
-  w <- V(G)$type == 1
-  V(G)$name[w] <- V(G)$Label[w] <- V(G)$cellType[w]
-  return(G)
-}
-
 add_vertices_to_attractors_graph <- function(G, tab.clustered, tab.median, col.names.att, col.names.matrix, dist.thresh = 0.7)
 {
   dd <- get_distances_from_attractors(tab.clustered, tab.median, col.names.att, col.names.matrix, dist.thresh)
@@ -906,13 +819,10 @@ add_vertices_to_attractors_graph <- function(G, tab.clustered, tab.median, col.n
   
   V(G)[1:num.vertices]$type <- 1 #attractor
   V(G)[(num.vertices + 1):vcount(G)]$type <- 2 #cell
-
-  for(i in colnames(tab.clustered))
-  {
-    G <- set.vertex.attribute(G, name = i, index = (num.vertices + 1):vcount(G), value = tab.clustered[, i])
-  }
   
-    
+  for(i in colnames(tab.clustered)){
+    G <- set.vertex.attribute(G, name = i, index = (num.vertices + 1):vcount(G), value = tab.clustered[, i])
+  }  
   
   G <- set_visual_attributes(G)
   return(G)
@@ -1022,7 +932,7 @@ get_distances_from_attractors <- function(m, tab, col.names.att, col.names.matri
 {
   att <- as.matrix(tab[, col.names.att])
   row.names(att) <- as.character(1:nrow(tab))
-  m <- as.matrix(m[, col.names.att])
+  m <- as.matrix(m[, col.names.matrix])
   dd <- t(apply(m, 1, function(x, att) {cosine_similarity_from_matrix(x, att)}, att))
   dd <- distance_from_attractor_hard_filter(dd, tab, col.names.att, thresh = 1) ##marque page
   dist.thresh <- quantile(dd, probs = 0.85, na.rm = T)
@@ -1566,8 +1476,8 @@ add_missing_columns <- function(m, col.names, fill.data)
 #################################################################################
 #Runs the existing analysis, mainly like the original code but with a few tricks due to how data are processed in this version.
 run_analysis_existing <- function(scaffold, 
-  refClusteredFiles, clusteredTables, outputDir, col.names.matrix, col.names.map,
-  inter.cluster.connections, mode, col.names.inter_cluster,
+  refClusteredFiles, clusteredTables, outputDir, col.names.matrix, col.names.map, 
+  names.mapping = NULL, inter.cluster.connections, mode, names.map, col.names.inter_cluster,
   inter_cluster.weight_factor, overlap_method, ew_influence)
 {
   files.list <- clusteredTables
@@ -1582,7 +1492,7 @@ run_analysis_existing <- function(scaffold,
   att.labels <- V(G.attractors)$Label
 
   ret <- process_files(files.list, scaffold$G[[1]], G.attractors, tab.attractors, att.labels, col.names.matrix = col.names.matrix, col.names.gated = col.names.map,
-                       scaffold.mode = "existing", ref.scaffold.markers = ref.scaffold.markers)
+                       scaffold.mode = "existing", ref.scaffold.markers = ref.scaffold.markers, names.mapping = names.mapping)
   ret <- c(list(scaffold.col.names = col.names.map, landmarks.data = ref.scaffold.data$landmarks.data), ret)
   
   # if (mode == "Concatenation") {
@@ -1668,7 +1578,7 @@ scaffold_cluster_export <- function(list1,list2,list.txt,scaffold.data){
 }
 
 scaffold_events_export <- function(list1, list2, list.flow.frames, scaffold.data, marker_e){
-  landmark <- rbind(scaffold_node_export(scaffold.data), c("null.landmark", 0, NA, NA))
+  landmark <- scaffold_node_export(scaffold.data)
   all.table <- scaffold_pop_export(scaffold.data)
   node.index.x <- which(V(scaffold.data$graphs[[1]])$type==1)
 
@@ -1680,60 +1590,26 @@ scaffold_events_export <- function(list1, list2, list.flow.frames, scaffold.data
     # print(table)
     tot <- sum(table[,"popsize"])
     temp <- as_data_frame(scaffold.data$graphs[[list1[x]]])
-    pop <- temp[which(temp[,"edge_type"]=="highest_scoring"),c("from", "to")]
-    m.pop <- max(as.numeric(unique(pop[,2])))-min(as.numeric(unique(pop[,2])))+1
-    l.pop <- length(as.numeric(unique(pop[,2])))
-    
-    diff <- m.pop - l.pop
-    
-    if (m.pop != l.pop)
-    {
-      v <- c(1:m.pop+10)
-      for (i in v)
-      {
-        if (!i%in%pop[,2] && diff>0)
-        {
-          temp <- pop[(i-9):nrow(pop),]
-          pop <- rbind(pop[1:(i-10),], c("null.landmark", i))
-          pop <- rbind(pop, temp)
-          diff <- diff -1
-        }
-      }
-    }
+    pop <- temp[which(temp[,"edge_type"]=="highest_scoring"),"from"]
 
-    pop <- pop[,"from"]
-    
     table <- cbind(table,table[,"popsize"],pop)
     table[,dim(table)[2]-1] <- (as.numeric(table[,"popsize"])/tot)*100
     colnames(table)[dim(table)[2]-1] <- "PercentOfTotal"
     
     rdata <- fcs@exprs
     new_col.1 <- matrix(rdata[,marker_e], nrow = nrow(rdata), ncol = 1, dimnames = list(NULL, marker_e))
-    
-    #Used when empty clusters exist with files coming from external sources
-    if(length(unique(table[,marker_e])) != max(as.numeric(unique(table[,marker_e]))))
-    {
-      liste.true <- unique(table[,marker_e])
-      liste.max <- 1:max(as.numeric(unique(table[,marker_e])))
-      matrice.miss <- !(liste.max %in% liste.true)
-      id <- 1
-      for (i in 1:length(matrice.miss)) {
-        if(matrice.miss[i]) {
-          empty.clusters <- matrix(0, ncol=ncol(table), nrow = 1)
-          colnames(empty.clusters) <- colnames(table)
-          empty.clusters[,1] <- i
-          empty.clusters[,"sample"] <- 1
-          empty.clusters[,"pop"] <- "None"
-          temp <- table[1:i-1,]
-          temp <- rbind(temp, empty.clusters)
-          table <- rbind(temp, table[i:nrow(table),])
-          }
-        }
-      }
-    
     new_col.2 <- as.vector(table[new_col.1,"pop"])
-    
-    pop.index <- unlist(lapply(new_col.2,function(j){return(landmark[which(j==landmark[,"pop Names"]),"pop ID"])}))
+    pop.index <- unlist(lapply(new_col.2,function(j){
+
+      ### QUICK DEBUG HERE################################################
+      #if(length(grep(i,landmark[,"pop Names"]))>0){#######################
+
+        return(landmark[which(j==landmark[,"pop Names"]),"pop ID"])
+
+      #}###################################################################
+      ####################################################################
+
+    }))
     
     popIDscaffold <- as.matrix(as.numeric(pop.index))
     colnames(popIDscaffold) <- "popIDscaffold"
@@ -1753,6 +1629,7 @@ scaffold_pop_mfi <- function(list1, list2, list.flow.frames, scaffold.data, mark
 
   table.mfi.pop <- lapply(c(1:length(list1)),function(x){
     fcs <- list.flow.frames[[list2[x]]]
+    print(fcs)
     d <- all.table[[list1[x]]]
     
     table <- get_matrix_from_fcs(1, list(fcs), "mean",marker_e)
@@ -1766,28 +1643,6 @@ scaffold_pop_mfi <- function(list1, list2, list.flow.frames, scaffold.data, mark
     
     rdata <- fcs@exprs
     new_col.1 <- matrix(rdata[,marker_e], nrow = nrow(rdata), ncol = 1, dimnames = list(NULL, marker_e))
-    
-    #Used when empty clusters exist with files coming from external sources
-    if(length(unique(table[,marker_e])) != max(as.numeric(unique(table[,marker_e]))))
-    {
-      liste.true <- unique(table[,marker_e])
-      liste.max <- 1:max(as.numeric(unique(table[,marker_e])))
-      matrice.miss <- !(liste.max %in% liste.true)
-      id <- 1
-      for (i in 1:length(matrice.miss)) {
-        if(matrice.miss[i]) {
-          empty.clusters <- matrix(0, ncol=ncol(table), nrow = 1)
-          colnames(empty.clusters) <- colnames(table)
-          empty.clusters[,1] <- i
-          empty.clusters[,"sample"] <- 1
-          empty.clusters[,"pop"] <- "None"
-          temp <- table[1:i-1,]
-          temp <- rbind(temp, empty.clusters)
-          table <- rbind(temp, table[i:nrow(table),])
-        }
-      }
-    }
-    
     new_col.2 <- as.vector(table[new_col.1,"pop"])
     pop.index <- unlist(lapply(new_col.2,function(j){return(landmark[which(j==landmark[,"pop Names"]),"pop ID"])}))
     
