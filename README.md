@@ -27,11 +27,13 @@ To use this tool you need a windows computer with :
 ```
 
 <h2> Presentation </h2>
-<ul>Lexical
+<h4>Lexical</h4>
+<ul>
   <li>Over-clustering : Its a volontaryto ask more cluster than population expected with unsupervised algorithme. With that you can play like a downsampling data which each cluster is a heterogenous cell groups (its not a population, we don't have this information).This approch it's used in SPADE, FlowSOM and other clustering algorithme </li>
   <li>Enrichment : </li>
   <li>Annotation : </li>
 </ul>
+
 CIPHoLD Tools is a rewrite of SCAFFOLD tools (https://github.com/nolanlab/scaffold). 
 <ul> <h4>Difference with scaffold</h4> 
   <li> File manager </li>
