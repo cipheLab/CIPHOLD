@@ -46,14 +46,23 @@ CIPHoLD Tools is a rewrite of SCAFFOLD tools (https://github.com/nolanlab/scaffo
 We decide to change the input and output system. 
 
 <h2> Upload Data </h2>
+
 <p>You can upload FCS in first tab and create group. Group creation is just a concatenation of FCS with new parameters used to save the files id (sample)</p>
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=600px/>
-<p> upload your multiple fcs file , you can upload 5G of data, if you can't make a issu or send mail and we change this option.
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" width=600px/>
-<p>You can create one groupe by file or concantenate multiple file (sample) in one. Its a good idea to donc change the cluster position in forced-directe-graph and just view a size cluster changing</p>
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/03.png" width=600px/>
+
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=700px/>
+
+<p> upload your multiple fcs file , you can upload 5G of data, if you can't make a issu or send mail and we change this option.</p>
+
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" width=700px/>
+
+<p>You can create one groupe by file or concantenate multiple file (sample) in one. Its a good idea to donc change the cluster position 
+ in forced-directe-graph and just view a size cluster changing</p>
+
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/03.png" width=700px/>
+
 <p></p>
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" width=600px/>
+
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" width=700px/>
 
 <p>You can upload csv table, with this files you don't need to clustering. Its result of clustering parts </p>
   
