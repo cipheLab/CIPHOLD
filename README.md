@@ -27,6 +27,13 @@ To use this tool you need a windows computer with :
 ```
 
 <h2> Presentation </h2>
+<h4>Lexical</h4>
+<ul>
+  <li>Over-clustering : Its a volontaryto ask more cluster than population expected with unsupervised algorithme. With that you can play like a downsampling data which each cluster is a heterogenous cell groups (its not a population, we don't have this information).This approch it's used in SPADE, FlowSOM and other clustering algorithme </li>
+  <li>Enrichment : </li>
+  <li>Annotation : </li>
+</ul>
+
 CIPHoLD Tools is a rewrite of SCAFFOLD tools (https://github.com/nolanlab/scaffold). 
 <ul> <h4>Difference with scaffold</h4> 
   <li> File manager </li>
@@ -40,18 +47,25 @@ We decide to change the input and output system.
 
 <h2> Upload Data </h2>
 <p>You can upload FCS in first tab and create group. Group creation is just a concatenation of FCS with new parameters used to save the files id (sample)</p>
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" />
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=600px/>
 
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" />
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" width=600px/>
 
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/03.png" />
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/03.png" width=600px/>
 
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" />
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/04.png" width=600px/>
 
 <p>You can upload csv table, with this files you don't need to clustering. Its result of clustering parts </p>
   
- <h2 Clustering </h2>
+ <h2> Clustering </h2>
  
+ <p>The clustering is an over-clustering. You need ask more than 100 clusters to make works the annotation. With CIPHoLD you can use gated file from one technology (flow, mass, rnaseq, etc..) for create map and annotate fcs file from other technology, because you can use different transformation on clustered file and gated files.</p>
+ 
+ <img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/05.png" >
+ 
+ <p> 1 : a : Select transform function you want use, arcsinh (masse data with 5 in argument or 150 for flow data) or logicle transform with biexp arg (value below zero save in fcs as $PnW keyword for each parameters </p>
+ <p> 1 : b : Select argument in transform function </p>
+ <p> 1 : c </p>
  
  <h2> Gated Files and Map creation </h2>
  
