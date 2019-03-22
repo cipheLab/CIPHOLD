@@ -263,7 +263,7 @@ shinyServer(function(input, output, session) {
 
   output$boxDelBut <- renderUI({
     if(is.null(listObject$flow.frames) && is.null(listObject$over.clustering)) return(NULL)
-    box(title="Unselect Files", collapsible= TRUE, width = "100%",id="inputboxGroups", status="success",
+    box(title="Delete Files", collapsible= TRUE, width = "100%",id="inputboxGroups", status="success",
       fluidRow(
         column(11, id = "align_button",tableOutput("flow_frames")),
         column(1,uiOutput("buttonDel"))
@@ -354,7 +354,7 @@ shinyServer(function(input, output, session) {
 
   output$boxMultiGroup <- renderUI({
     if(is.null(listObject$flow.frames)) return(NULL)
-    box(title="Unselect Files", collapsible= TRUE, width = "100%",id="inputboxGroups",status="primary",
+    box(title="Create Group", collapsible= TRUE, width = "100%",id="inputboxGroups",status="primary",
       fluidRow(
         column(12,uiOutput("clusteringui2"),
           column(6,actionButton("clusteringui_add_clustering_group", "Add clustering group")),
