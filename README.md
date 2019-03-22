@@ -40,7 +40,7 @@ We decide to change the input and output system.
 
 <h2> Upload Data </h2>
 <p>You can upload FCS in first tab and create group. Group creation is just a concatenation of FCS with new parameters used to save the files id (sample)</p>
-<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=200px/>
+<img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/01.png" width=500px/>
 
 <img src="https://raw.githubusercontent.com/cipheLab/CIPHoLD/master/doc/img/02.png" />
 
