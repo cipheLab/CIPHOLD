@@ -75,6 +75,9 @@ We decide to change the input and output system.
  <p> 1 : a : Select transform function you want use, arcsinh (masse data with 5 in argument or 150 for flow data) or logicle transform with biexp arg (value below zero save in fcs as $PnW keyword for each parameters </p>
  <p> 1 : b : Select argument in transform function and compensate or not. If its mass data and they are no "SPILL"keyword automaticly compensate a not engage.
  <p> 1 : c : If you don't want transform value, like clustering enrichment, annotaion, t-sne coordinate, or other reduction dimensions or information, its possible to "safe" your parameters in this part</p>
+ <p> 2 : a : If you upad enriched fcss wih over-cspas in expression matrce, you need to select this params in this field. Don't forget, if it's necessary, to transform other value and don't transforrm your enrichment parameters </p>
+ <p> 3 : a : </p>
+ 
  
  <h2> Gated Files and Map creation </h2>
  
