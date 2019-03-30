@@ -810,6 +810,18 @@ get_highest_scoring_edges <- function(G) {
   return(G)
 }
 
+names_map_factory <- function(names.map)
+{
+  function(v)
+  {
+    sel <- v %in% names(names.map)
+    if(any(sel))
+      v[sel] <- names.map[v[sel]]
+    return(v)
+    
+  }
+}
+
 process_data <- function(tab, map.clustedFiles.names=NULL, G.attractors = NULL, tab.attractors = NULL, col.names.gated = NULL, col.names.matrix = NULL, att.labels = NULL, dist.thresh = 0.7,
                          already.clustered = FALSE, inter.cluster.connections = FALSE, col.names.inter_cluster = NULL, inter_cluster.weight_factor = 0.7, ew_influence,
                          overlap_method = NULL){
