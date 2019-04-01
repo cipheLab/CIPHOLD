@@ -354,7 +354,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
     # source("ModifyFCS.R")
     library('BiocGenerics') ## for the combine function
     library("flowCore")
-    library("flowAI")
+    # library("flowAI")
     library("plyr")
     
     enrich.FCS.CIPHE <- function(original, new.column)
