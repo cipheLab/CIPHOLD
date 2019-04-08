@@ -591,7 +591,7 @@ load_attractors_from_gated_data <- function(flow.frames, col.names, ...)
     population <- tail(strsplit(names(flow.frames)[i], "_")[[1]], n = 1)
     
     fcs <- flow.frames[[i]]
-    
+    print(col.names)
     tab <- exprs(fcs)
     m <- as.matrix(tab)
     col.names <- colnames(m)
