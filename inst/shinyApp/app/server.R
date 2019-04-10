@@ -1463,9 +1463,7 @@ shinyServer(function(input, output, session) {
     
     col.names <- input$mapdataui_ori_markers_list
     ref.col.names <- input$mapdataui_ref_markers_list
-    names.map <- ref.col.names
     #Missing values (i.e. non-mapped markers) are filled with NA
-    names(names.map) <- col.names
     ew_influence <- NULL
     
     result <- run_analysis_existing(
@@ -1477,7 +1475,6 @@ shinyServer(function(input, output, session) {
       col.names.map = input$mapdataui_ref_markers_list,
       inter.cluster.connections = input$mappingui_inter_cluster_connections,
       mode = input$mapping_method,
-      names.map = names.map,
       col.names.inter_cluster = NULL,
       inter_cluster.weight_factor = NULL,
       overlap_method = "repel",

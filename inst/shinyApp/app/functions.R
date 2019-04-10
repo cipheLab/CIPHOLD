@@ -597,9 +597,7 @@ load_attractors_from_gated_data <- function(flow.frames, col.names, ...)
     col.names <- colnames(m)
     tab <- data.frame(m)
     names(tab) <- col.names
-    
-    # if(!all(pData(parameters(fcs))$desc == " ")) colnames(tab) <- pData(parameters(fcs))$desc
-    # else 
+
     colnames(tab) <- pData(parameters(fcs))$name
     
     if(any(is.na(colnames(tab)))) {
