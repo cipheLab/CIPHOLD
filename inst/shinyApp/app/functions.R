@@ -540,7 +540,7 @@ run_clustering <- function(flow.frames, methods, args, nb.cluster, params,
         ff <- deCompensateFlowFrame(ff, ff@description[["SPILL"]])
     }
     print("Writing FCS...")
-    # write.FCS(ff, outname, delimiter="#")
+    ff <- updateFlowFrameKeywordsCIPHE(ff)
     write.FCS(ff, outname)
   })
 
@@ -1573,7 +1573,8 @@ export_clusters <- function(working.dir, sel.graph, sel.nodes)
   f <- flowFrame(as.matrix(d))
   p <- sprintf("scaffold_export_%s_", gsub(".fcs.clustered.txt", "", sel.graph))
   outname <- tempfile(pattern = p, tmpdir = working.dir, fileext = ".fcs")
-  # write.FCS(f, outname, delimiter="#")
+
+  f <- updateFlowFrameKeywordsCIPHE(f)
   write.FCS(f, outname)
 }
 
