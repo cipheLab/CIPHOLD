@@ -46,6 +46,53 @@ enrich.FCS.CIPHE <- function(original, new.column)
   return(new_fcs)
 }
 
+updateFlowFrameKeywordsCIPHE <- function(flowFrame){
+    
+    row.names(flowFrame@parameters) <- paste0("$P",c(1:length(row.names(flowFrame@parameters))))
+    params = parameters(flowFrame)
+    pdata = pData(params)
+    for (i in 1:ncol(flowFrame)){
+      
+      s = paste("$P",i,"S",sep="");
+      n = paste("$P",i,"N",sep="");
+      r = paste("$P",i,"R",sep="");
+      b = paste("$P",i,"B",sep="");
+      e = paste("$P",i,"E",sep="");
+      fcmax1 <- paste("flowCore_$P",i,"Rmax",sep="");
+      fcmin1 <- paste("flowCore_$P",i,"Rmin",sep="");
+      fcmax <- paste("flowCore_P",i,"Rmax",sep="");
+      fcmin <- paste("flowCore_P",i,"Rmin",sep="");
+      display = paste0("P",i,"DISPLAY")
+      bs = paste0("P",i,"BS")
+      ms = paste0("P",i,"MS")
+
+      keyval=list();
+      label <- pData(flowFrame@parameters)[,"desc"][i]
+      if(is.na(label)) {label <- colnames(flowFrame)[i] }
+      keyval[[s]] = label
+      keyval[[n]] = colnames(flowFrame)[i]         
+      keyval[[r]] = ceiling(max(exprs(flowFrame)[,i])-min(exprs(flowFrame)[,i]))
+      keyval[[b]] = 32;
+      keyval[[e]] = "0,0";
+      keyval[[fcmax1]] <- ceiling(max(exprs(flowFrame)[,i])-min(exprs(flowFrame)[,i]))
+      keyval[[fcmin1]] <- ceiling(min(exprs(flowFrame)[,i]))
+      keyval[[fcmax]] <- ceiling(max(exprs(flowFrame)[,i])-min(exprs(flowFrame)[,i]))
+      keyval[[fcmin]] <- ceiling(min(exprs(flowFrame)[,i]))
+      keyval[[bs]] <- 0
+      keyval[[display]] <- "LOG"
+      keyval[[ms]] <- 0
+
+      keyword(flowFrame) = keyval;
+      pdata[i,"minRange"]=min(exprs(flowFrame)[,i])
+      pdata[i,"maxRange"]=max(exprs(flowFrame)[,i])
+      
+    }
+    pData(params)=pdata
+    parameters(flowFrame)=params
+    row.names(flowFrame@parameters) <- paste0("$P",c(1:length(row.names(flowFrame@parameters))))
+    return(flowFrame)
+  }
+
 #Depending on the OS different functions are to choose a directory because no one is currently crossplatform.
 chooseDir <-  function() {
   # OS <- Sys.info()["sysname"]
