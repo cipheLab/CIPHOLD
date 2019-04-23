@@ -145,7 +145,9 @@ options(stringsAsFactors = F)
       keyval[[fcmin]] <- ceiling(min(exprs(flowFrame)[,i]))
       keyval[[bs]] <- 0
       keyval[[display]] <- "LOG"
-      keyval[[ms]] <- 0
+      v.ms <- 0
+      if(!is.null(flowFrame@description[[ms]])){v.ms <- flowFrame@description[[ms]]}
+      keyval[[ms]] <- v.ms
 
       keyword(flowFrame) = keyval;
       pdata[i,"minRange"]=min(exprs(flowFrame)[,i])

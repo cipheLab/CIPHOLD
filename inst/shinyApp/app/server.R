@@ -1621,6 +1621,9 @@ shinyServer(function(input, output, session) {
       tmpdir <- tempdir()
       setwd(tempdir())
       
+      print(names(listObject$flow.frames.enrich))
+      print(names(listObject$flow.frames))
+
       if(is.null(listObject$flow.frames.enrich) && is.null(listObject$flow.frames)){
         tables <- scaffold_cluster_export(
           input$mapdataui_map_list,
