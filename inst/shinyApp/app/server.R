@@ -560,7 +560,7 @@ shinyServer(function(input, output, session) {
       nb.cluster = input$clustering_k,
       params = input$clusteringui_markers,
       outputDir = listObject$outputDirectory,
-      index = NULL,
+      # index = NULL,
       groups = listObject$clustering.groups,
       ncores = input$ncores,
       transComp = c(input$comp, input$method_transform, args_transform, listObject$doneComp),
