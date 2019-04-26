@@ -1647,7 +1647,8 @@ shinyServer(function(input, output, session) {
           input$clusterID
         )
         for(i in c(1:length(flow.frames))){
-          name <- names(listObject$flow.frames)[i]
+          name <- names(input$mapdataui_files_list)[i]
+          print(name)
           fcs <- flow.frames[[i]]
           path <- gsub(".fcs$","_cellType.fcs",name)
           fs <- c(fs, path)
