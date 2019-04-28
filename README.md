@@ -1,4 +1,4 @@
-# CIPHoLD
+# CIPHoLD : Adaptation of the SCAFFOLD cytometry tool.
 <h2> Install dependencies </h2>
 To use this tool you need a windows computer with :
 <ul>
