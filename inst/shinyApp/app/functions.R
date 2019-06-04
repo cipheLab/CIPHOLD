@@ -432,7 +432,6 @@ options(stringsAsFactors = F)
       # source("ModifyFCS.R")
       library('BiocGenerics') ## for the combine function
       library("flowCore")
-      library("flowAI")
       library("plyr")
       
       enrich.FCS.CIPHE <- function(original, new.column){
