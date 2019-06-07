@@ -1647,7 +1647,7 @@ shinyServer(function(input, output, session) {
           input$clusterID
         )
         for(i in c(1:length(flow.frames))){
-          name <- names(input$mapdataui_files_list)[i]
+          name <- input$mapdataui_files_list[i]
           print(name)
           fcs <- flow.frames[[i]]
           path <- paste0(name,"_cellType.fcs")
