@@ -1653,8 +1653,7 @@ shinyServer(function(input, output, session) {
           path <- gsub(".fcs$","_cellType.fcs",name)
           fs <- c(fs, path)
           fcs <- updateFlowFrameKeywordsCIPHE(fcs)
-          # write.FCS(fcs, path, delimiter="#")
-          write.FCS(fcs, filename=paste0(output.dir, path))
+          write.FCS(fcs, filename=path)
         }
       }
       
