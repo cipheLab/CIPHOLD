@@ -1650,9 +1650,10 @@ shinyServer(function(input, output, session) {
           name <- names(input$mapdataui_files_list)[i]
           print(name)
           fcs <- flow.frames[[i]]
-          path <- gsub(".fcs$","_cellType.fcs",name)
+          path <- paste0(name,"_cellType.fcs")
           fs <- c(fs, path)
           fcs <- updateFlowFrameKeywordsCIPHE(fcs)
+          print(path)
           write.FCS(fcs, filename=path)
         }
       }
